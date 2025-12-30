@@ -2,11 +2,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // 桌面端导航
     const mobileMenu = document.querySelector('.mobile-menu');
     const nav = document.querySelector('nav');
-
+    const desktopHeader = document.querySelector('header');
+  
     // 移动端导航
     const mobileHeader = document.querySelector('.mobile-header');
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const mobileNav = document.querySelector('.mobile-nav');
+    
+    // 响应屏幕大小变化
+    function checkScreenSize() {
+        if (window.innerWidth <= 768) {
+            // 移动端屏幕 - 显示移动端导航，隐藏桌面端导航
+            desktopHeader.style.display = 'none';
+            mobileHeader.classList.remove('hide');
+            mobileHeader.classList.add('show');
+            document.body.classList.add('mobile-view');
+            document.body.classList.remove('desktop-view');
+        } else {
+            // 桌面端屏幕 - 显示桌面端导航，隐藏移动端导航
+            desktopHeader.style.display = 'block';
+            mobileHeader.classList.remove('show');
+            mobileHeader.classList.add('hide');
+            document.body.classList.remove('mobile-view');
+            document.body.classList.add('desktop-view');
+            
+            // 确保移动端导航完全隐藏
+            mobileNav.style.display = 'none';
+        }
+    }
+    
+    // 初始化时检查屏幕大小
+    checkScreenSize();
+    
+    // 监听窗口大小变化
+    window.addEventListener('resize', checkScreenSize);
 
     // 桌面端菜单切换函数
     function toggleMenu() {
@@ -36,6 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 移动端菜单切换函数
     function toggleMobileMenu() {
+        // 先确保移动端头部是显示的
+        mobileHeader.classList.remove('hide');
+        mobileHeader.classList.add('show');
+        
+        // 切换移动端导航的打开状态
         mobileNav.classList.toggle('open');
         
         // 切换菜单按钮的图标
