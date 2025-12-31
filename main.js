@@ -126,11 +126,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // 点击移动端菜单项后关闭菜单
+    // 点击移动端菜单项后关闭菜单并执行锚链接跳转
     const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
     mobileNavLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function(e) {
+            // 阻止默认行为，防止页面跳转
+            e.preventDefault();
+            
+            // 获取目标ID
+            const targetId = this.getAttribute('href').substring(1);
+            
+            // 执行平滑滚动
+            smoothScrollTo(targetId);
+            
+            // 关闭移动菜单
             closeMobileMenu();
+            
+            // 阻止事件冒泡，防止触发背景点击事件
+            e.stopPropagation();
         });
     });
 
@@ -147,10 +160,30 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // 移动端菜单
+        // 移动端菜单 - 改用更明确的逻辑
         if (mobileNav.classList.contains('open')) {
-            // 如果点击的不是移动菜单或菜单按钮，则关闭菜单
-            if (!mobileNav.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+            // 获取移动端导航容器
+            const mobileNav = document.querySelector('.mobile-nav');
+            
+            // 如果点击的是导航背景区域(不在导航链接内)，则关闭菜单
+            // 注意：这里我们只检查是否在移动导航容器内，不检查菜单按钮
+            if (mobileNav.contains(e.target)) {
+                // 点击在移动导航容器内
+                // 检查点击的是否是导航链接
+                const clickedLink = e.target.closest('.mobile-nav-links a');
+                
+                if (!clickedLink) {
+                    // 点击的不是导航链接，可能是点击了背景或容器内其他区域
+                    // 检查是否在导航链接容器外点击
+                    const navLinks = mobileNav.querySelector('.mobile-nav-links');
+                    
+                    if (!navLinks.contains(e.target)) {
+                        // 点击在导航链接容器外，关闭菜单
+                        closeMobileMenu();
+                    }
+                }
+            } else {
+                // 点击在移动导航容器外，关闭菜单
                 closeMobileMenu();
             }
         }
